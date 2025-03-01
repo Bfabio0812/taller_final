@@ -1,0 +1,43 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - green  # Se desplegará cuando hagas push en green
+
+permissions:
+  id-token: write
+  pages: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar dependencias (si existen)
+        run: npm install || echo "No hay dependencias"
+
+      - name: Construir el sitio (si es necesario)
+        run: echo "No hay build necesario"
+
+      - name: Subir archivos a artefacto
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: "."
+
+      - name: Desplegar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Confirmar despliegue exitoso
+        run: echo "¡Despliegue completado con éxito!"
